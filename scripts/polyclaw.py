@@ -78,6 +78,9 @@ def main():
     elif command == "hedge":
         return run_script("hedge", args)
 
+    elif command == "scan":
+        return run_script("daily_scan", ["scan"] + args)
+
     elif command == "help" or command == "--help" or command == "-h":
         print(__doc__)
         print("Commands:")
@@ -99,6 +102,11 @@ def main():
         print("  hedge scan                 Scan trending markets for hedges")
         print("  hedge scan --query <q>     Scan markets matching query")
         print("  hedge analyze <id1> <id2>  Analyze pair for hedging relationship")
+        print("")
+        print("  scan                       Daily opportunity scanner")
+        print("  scan --auto                Scan + auto-execute trades")
+        print("  scan --query <q>           Scan specific topic")
+        print("  scan --max-bet 5           Max $ per trade (default $3)")
         print("")
         print("Environment Variables:")
         print("  CHAINSTACK_NODE            Polygon RPC URL (required for trading)")

@@ -150,6 +150,42 @@ uv run python scripts/polyclaw.py hedge scan --query "election"
 uv run python scripts/polyclaw.py hedge analyze <id1> <id2>
 ```
 
+### 每日扫描（Daily Scanner）
+
+自动扫描市场寻找交易机会，支持三种策略：
+
+| 策略 | 说明 |
+|------|------|
+| 🏁 endgame（终局交易） | 市场 >90% 概率，买入近乎确定的赢家 |
+| 💰 mispricing（定价偏差） | YES+NO < $0.95，买两边套利 |
+| ⏰ expiring（即将结算） | 24h 内结算且方向明确（>80%） |
+
+```bash
+# 仅扫描，报告机会
+uv run python scripts/polyclaw.py scan
+
+# 按关键词过滤
+uv run python scripts/polyclaw.py scan --query "Bitcoin"
+
+# 自动执行（高置信度机会，每笔最多 $3，总计最多 $10）
+uv run python scripts/polyclaw.py scan --auto --max-bet 3 --max-total 10
+
+# 调整阈值
+uv run python scripts/polyclaw.py scan --min-edge 0.08 --min-volume 10000
+```
+
+#### 定时任务（Cron 集成）
+
+通过 OpenClaw cron 每天自动扫描：
+
+```
+每天早上 9:00 和晚上 9:00 运行 polymarket-trader 的 daily scan，
+扫描结果发给我，如果有高置信度机会（edge > 8%）就自动执行，
+每笔最多 $3，每天总计最多 $10。
+```
+
+⚠️ 自动执行仅限 `confidence: high` 的机会，`BOTH`（套利）暂不自动执行。
+
 ---
 
 ## ⚠️ 踩坑记录
